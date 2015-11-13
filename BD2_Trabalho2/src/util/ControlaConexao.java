@@ -21,8 +21,19 @@ import java.sql.Statement;
  */
 public class ControlaConexao {
     
+    private static String login;
+    private static String senha;
+
+    public static void setLogin(String login) {
+        ControlaConexao.login = login;
+    }
+
+    public static void setSenha(String senha) {
+        ControlaConexao.senha = senha;
+    }
+    
     public static Connection getConexao() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost/bd_apbd","root","root");
+        return DriverManager.getConnection("jdbc:mysql://localhost/bd_apbd", login, senha);
     }
 
     public static void fecharResultSet(ResultSet resultados) throws BDException{
