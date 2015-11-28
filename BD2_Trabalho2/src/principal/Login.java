@@ -22,6 +22,9 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+        tfHost.setText("localhost");
+        tfPorta.setText("3306");
+        tfLogin.requestFocus();
     }
 
     /**
@@ -33,19 +36,29 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        painelAcesso = new javax.swing.JPanel();
+        lHost = new javax.swing.JLabel();
+        tfHost = new javax.swing.JTextField();
+        lPorta = new javax.swing.JLabel();
+        tfPorta = new javax.swing.JTextField();
         lLogin = new javax.swing.JLabel();
-        lSenha = new javax.swing.JLabel();
         tfLogin = new javax.swing.JTextField();
+        lSenha = new javax.swing.JLabel();
         tfSenha = new javax.swing.JPasswordField();
+        jSeparator1 = new javax.swing.JSeparator();
         bLogar = new javax.swing.JButton();
         bSair = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login");
 
-        lLogin.setText("Login:");
+        painelAcesso.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Dados de Acesso", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 12), new java.awt.Color(255, 0, 0))); // NOI18N
 
-        lSenha.setText("Senha:");
+        lHost.setText("Host:");
+
+        lPorta.setText("Porta:");
+
+        lLogin.setText("Usuário:");
 
         tfLogin.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -53,11 +66,56 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
+        lSenha.setText("Senha:");
+
         tfSenha.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tfSenhaKeyPressed(evt);
             }
         });
+
+        javax.swing.GroupLayout painelAcessoLayout = new javax.swing.GroupLayout(painelAcesso);
+        painelAcesso.setLayout(painelAcessoLayout);
+        painelAcessoLayout.setHorizontalGroup(
+            painelAcessoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(painelAcessoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(painelAcessoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lLogin)
+                    .addComponent(lSenha)
+                    .addComponent(lPorta)
+                    .addComponent(lHost))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(painelAcessoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tfHost)
+                    .addComponent(tfPorta)
+                    .addGroup(painelAcessoLayout.createSequentialGroup()
+                        .addComponent(tfSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(tfLogin))
+                .addContainerGap())
+        );
+        painelAcessoLayout.setVerticalGroup(
+            painelAcessoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(painelAcessoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(painelAcessoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lHost)
+                    .addComponent(tfHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(painelAcessoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lPorta)
+                    .addComponent(tfPorta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(painelAcessoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lLogin)
+                    .addComponent(tfLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(painelAcessoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lSenha)
+                    .addComponent(tfSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         bLogar.setText("Logar");
         bLogar.addActionListener(new java.awt.event.ActionListener() {
@@ -78,36 +136,29 @@ public class Login extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lLogin)
-                    .addComponent(lSenha))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tfLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(painelAcesso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(bLogar))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bSair, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(10, 10, 10)
+                        .addComponent(bLogar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                        .addComponent(bSair, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(13, 13, 13))
+                    .addComponent(jSeparator1))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(painelAcesso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lLogin)
-                    .addComponent(tfLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bLogar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lSenha)
-                    .addComponent(bSair)
-                    .addComponent(tfSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bLogar)
+                    .addComponent(bSair))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -136,13 +187,13 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_tfLoginKeyPressed
 
     private void verificarAcesso(){
-        String senhaTela = "";
-        for (char caracter: tfSenha.getPassword()){
-            senhaTela = senhaTela + caracter;
-        }
-        
+        String host = tfHost.getText();
+        String porta = tfPorta.getText();
         String login = tfLogin.getText();
-        String senha = senhaTela;
+        String senha = new String(tfSenha.getPassword());
+        
+        ControlaConexao.setHost(host);
+        ControlaConexao.setPorta(porta);
         ControlaConexao.setLogin(login);
         ControlaConexao.setSenha(senha);
         Connection conexao = null;
@@ -213,9 +264,15 @@ public class Login extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bLogar;
     private javax.swing.JButton bSair;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lHost;
     private javax.swing.JLabel lLogin;
+    private javax.swing.JLabel lPorta;
     private javax.swing.JLabel lSenha;
+    private javax.swing.JPanel painelAcesso;
+    private javax.swing.JTextField tfHost;
     private javax.swing.JTextField tfLogin;
+    private javax.swing.JTextField tfPorta;
     private javax.swing.JPasswordField tfSenha;
     // End of variables declaration//GEN-END:variables
 }

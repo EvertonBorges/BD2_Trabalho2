@@ -1,4 +1,4 @@
-package modelo.tabela;
+package modelo.lista;
 
 import java.util.List;
 import javax.swing.AbstractListModel;

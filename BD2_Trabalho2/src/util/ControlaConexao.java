@@ -20,9 +20,10 @@ import java.sql.Statement;
  * @author rogeriocarmine
  */
 public class ControlaConexao {
-    
     private static String login;
     private static String senha;
+    private static String host;
+    private static String porta;
 
     public static void setLogin(String login) {
         ControlaConexao.login = login;
@@ -31,9 +32,17 @@ public class ControlaConexao {
     public static void setSenha(String senha) {
         ControlaConexao.senha = senha;
     }
+
+    public static void setHost(String host) {
+        ControlaConexao.host = host;
+    }
+
+    public static void setPorta(String porta) {
+        ControlaConexao.porta = porta;
+    }
     
     public static Connection getConexao() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost/bd_apbd", login, senha);
+        return DriverManager.getConnection("jdbc:mysql://" + host + ":" + porta, login, senha);
     }
 
     public static void fecharResultSet(ResultSet resultados) throws BDException{

@@ -12,9 +12,40 @@ import util.ControlaConexao;
 
 public class ConsultarInformationSchema {
     
+    public List<String> tabela(String banco, String tabela) throws BDException{
+        Connection conexao = null;
+        PreparedStatement instrucao = null;
+        ResultSet resultados = null;
+        List<String> campos = new ArrayList<>();
+        
+        String sql = "SELECT DISTINCT COLUMN_NAME "
+                   + "FROM INFORMATION_SCHEMA.COLUMNS "
+                   + "WHERE TABLE_SCHEMA = ? "
+                   + "AND TABLE_NAME LIKE ? ";
+        
+        try {
+            conexao = ControlaConexao.getConexao();
+            instrucao = conexao.prepareStatement(sql);
+            instrucao.setString(1, banco);
+            instrucao.setString(2, "%" + tabela);
+            resultados = instrucao.executeQuery();
+            while(resultados.next()){
+                String campo = resultados.getString("COLUMN_NAME");
+                campos.add(campo);
+            }
+            return campos;
+        } catch (SQLException ex) {
+            throw new BDException(BDMensagensPadrao.INSTRUCAO_ERRO, ex);
+        } finally {
+            ControlaConexao.fecharConexao(conexao);
+            ControlaConexao.fecharInstrucaoStatement(instrucao);
+            ControlaConexao.fecharResultSet(resultados);
+        }
+    }
+    
     public List<String> tabelas(String banco) throws BDException{
-        Connection conexao=null;
-        PreparedStatement instrucao=null;
+        Connection conexao = null;
+        PreparedStatement instrucao = null;
         ResultSet resultados = null;
         List<String> tabelas = new ArrayList<>();
         
@@ -25,11 +56,7 @@ public class ConsultarInformationSchema {
         try {
             conexao = ControlaConexao.getConexao();
             instrucao = conexao.prepareStatement(sql);
-            if (banco.equals("")) {
-                instrucao.setString(1, banco);
-            } else {
-                instrucao.setString(1, "%" + banco + "%");
-            }
+            instrucao.setString(1, "%" + banco);
             resultados = instrucao.executeQuery();
             while(resultados.next()){
                 String tabela = resultados.getString("TABLE_NAME");
