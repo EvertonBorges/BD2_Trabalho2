@@ -3,10 +3,17 @@ package principal;
 import dao.ConsultarInformationSchema;
 import excecao.BDException;
 import java.awt.Point;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import modelo.internalframa.Tabelas;
 import modelo.lista.ListaTabelaModelo;
 
@@ -19,6 +26,7 @@ public class Principal extends javax.swing.JFrame {
     
     public Principal() {
         initComponents();
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
     public static List<Tabelas> getFramesInternas() {
@@ -110,17 +118,12 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, painelConsultasLayout.createSequentialGroup()
                 .addComponent(painelBancos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(painelTabelas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(painelTabelas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         painelPrincipal.setBackground(new java.awt.Color(255, 255, 255));
         painelPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Tabelas", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 0, 0))); // NOI18N
         painelPrincipal.setForeground(new java.awt.Color(255, 255, 255));
-        painelPrincipal.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                painelPrincipalComponentMoved(evt);
-            }
-        });
 
         javax.swing.GroupLayout painelPrincipalLayout = new javax.swing.GroupLayout(painelPrincipal);
         painelPrincipal.setLayout(painelPrincipalLayout);
@@ -130,7 +133,7 @@ public class Principal extends javax.swing.JFrame {
         );
         painelPrincipalLayout.setVerticalGroup(
             painelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 356, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         painelCampos.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Atributos", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 0, 0))); // NOI18N
@@ -156,7 +159,7 @@ public class Principal extends javax.swing.JFrame {
         );
         painelCamposLayout.setVerticalGroup(
             painelCamposLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -176,13 +179,14 @@ public class Principal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(painelConsultas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(painelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(painelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(painelCampos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(painelCampos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(painelConsultas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(11, 11, 11))))
         );
 
         pack();
@@ -202,10 +206,6 @@ public class Principal extends javax.swing.JFrame {
         selecionarTabela();
         realizarAcaoTabela(evt);
     }//GEN-LAST:event_listTabelasMouseReleased
-
-    private void painelPrincipalComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_painelPrincipalComponentMoved
-        // TODO add your handling code here:
-    }//GEN-LAST:event_painelPrincipalComponentMoved
 
     private void selecionarBanco() {
         painelPrincipal.removeAll();
@@ -278,6 +278,31 @@ public class Principal extends javax.swing.JFrame {
     private void criarFrameInterna(Tabelas frame){
         frame.setSize(150, 200);
         frame.setLocation((painelPrincipal.getWidth() - frame.getWidth())/2, (painelPrincipal.getHeight()- frame.getHeight())/2);
+        frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                super.componentMoved(e);
+                painelPrincipal.repaint();
+                
+                desenharRelacionamento();
+                painelPrincipal.revalidate();
+            }
+        });
+        frame.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e); //To change body of generated methods, choose Tools | Templates.
+                desenharRelacionamento();
+            }
+        });
+        frame.addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+                super.internalFrameClosed(e); //To change body of generated methods, choose Tools | Templates.
+                painelPrincipal.repaint();
+                desenharRelacionamento();
+            }
+        });
         painelPrincipal.add(frame);
         frame.setVisible(true);
         framesInternas.add(frame);
@@ -298,27 +323,20 @@ public class Principal extends javax.swing.JFrame {
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
         for (int i = 0; i < framesInternas.size(); i++) {
             for (int j = i + 1; j < framesInternas.size(); j++) {
-                List<String> relacionamentos;
+                List<String> relacionamentos = new ArrayList<>();
                 try {
                     relacionamentos = consulta.relacionamento(banco, framesInternas.get(i).getTitle(), framesInternas.get(j).getTitle());
                 } catch (BDException ex) {
-                    relacionamentos = null;
                     System.out.println("Erro: " + ex.getMessage());
                 }
-                if (relacionamentos != null) {
-                    System.out.println("Teste");
+                if (!relacionamentos.isEmpty()) {
                     int menorDistancia[] = menorDistancia(framesInternas.get(i), framesInternas.get(j));
                     Point posicao1 = framesInternas.get(i).posicao(menorDistancia[0]);
-                    Point posicao2 = framesInternas.get(i).posicao(menorDistancia[1]);
-                    Point pontoMedio = new Point((posicao1.x + posicao2.x)/2, (posicao1.y + posicao2.y)/2);
-                    painelPrincipal.getGraphics().drawLine(posicao1.x, posicao1.y, posicao1.x, pontoMedio.y);
-                    painelPrincipal.getGraphics().drawLine(posicao1.x, pontoMedio.y, pontoMedio.x, pontoMedio.y);
-                    painelPrincipal.getGraphics().drawLine(posicao2.x, posicao2.y, posicao2.x, pontoMedio.y);
-                    painelPrincipal.getGraphics().drawLine(posicao2.x, pontoMedio.y, pontoMedio.x, pontoMedio.y);
+                    Point posicao2 = framesInternas.get(j).posicao(menorDistancia[1]);
+                    painelPrincipal.getGraphics().drawLine(posicao1.x, posicao1.y, posicao2.x, posicao2.y);
                 }
             }
         }
-        painelPrincipal.revalidate();
     }
     
     //Provavelmente erro esta aqui.
@@ -327,12 +345,16 @@ public class Principal extends javax.swing.JFrame {
         int frame1Posicao = 0;
         int frame2Posicao = 0;
         for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                int frame1X = frame1.posicao(frame1Posicao).x;
-                int frame1Y = frame1.posicao(frame1Posicao).y;
-                int frame2X = frame1.posicao(frame2Posicao).x;
-                int frame2Y = frame1.posicao(frame2Posicao).x;
-                if (Point.distance(frame1X, frame1Y, frame2X, frame2Y) < Point.distance(frame1.posicao(i).x, frame1.posicao(i).y, frame2.posicao(j).x, frame1.posicao(j).y)) {
+            for (int j = i; j < 4; j++) {
+                int frame1X = frame1.posicao(i).x;
+                int frame1Y = frame1.posicao(i).y;
+                int frame2X = frame2.posicao(j).x;
+                int frame2Y = frame2.posicao(j).x;
+                int frame1MenorX = frame1.posicao(frame1Posicao).x;
+                int frame1MenorY = frame1.posicao(frame1Posicao).y;
+                int frame2MenorX = frame2.posicao(frame2Posicao).x;
+                int frame2MenorY = frame2.posicao(frame2Posicao).y;
+                if (Point.distance(frame1X, frame1Y, frame2X, frame2Y) < Point.distance(frame1MenorX, frame1MenorY, frame2MenorX, frame2MenorY)) {
                     frame1Posicao = i;
                     frame2Posicao = j;
                 }

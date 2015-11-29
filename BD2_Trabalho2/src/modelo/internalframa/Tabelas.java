@@ -1,7 +1,5 @@
 package modelo.internalframa;
 
-import dao.ConsultarInformationSchema;
-import excecao.BDException;
 import java.awt.Point;
 import java.util.List;
 import javax.swing.JInternalFrame;
@@ -10,7 +8,6 @@ import principal.Principal;
 
 public class Tabelas extends javax.swing.JInternalFrame {
     private final List<String> atributos;
-    private List<String> relacionamentos;
     
     public Tabelas(String title, List<String> atributos) {
         this.atributos = atributos;
@@ -43,19 +40,23 @@ public class Tabelas extends javax.swing.JInternalFrame {
     }
     
     private Point posicaoNorte(){
-        return new Point(getWidth()/2, 0);
+        return new Point(getLocation().x + getWidth()/2, getLocation().y);
     }
     
     private Point posicaoLeste(){
-        return new Point(getWidth(), getHeight()/2);
+        return new Point(getLocation().x + getWidth(), getLocation().y + getHeight()/2);
     }
     
     private Point posicaoSul(){
-        return new Point(getWidth()/2, getHeight());
+        return new Point(getLocation().x + getWidth()/2, getLocation().y + getHeight());
     }
     
     private Point posicaoOeste(){
-        return new Point(0, getHeight()/2);
+        return new Point(getLocation().x, getLocation().y + getHeight()/2);
+    }
+    
+    public Point getCentro() {
+        return new Point(getLocation().x + (getWidth()/2), getLocation().y + (getHeight()/2));
     }
     
     public Point posicao(int i){
