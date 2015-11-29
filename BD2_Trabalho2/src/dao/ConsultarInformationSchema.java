@@ -12,6 +12,36 @@ import util.ControlaConexao;
 
 public class ConsultarInformationSchema {
     
+    public List<String> relacionamento(String tabela1, String tabela2) throws BDException{
+        Connection conexao = null;
+        PreparedStatement instrucao = null;
+        ResultSet resultados = null;
+        List<String> relacionamentos = new ArrayList<>();
+        
+        String sql = "SP_EX(?, ?)";
+        
+        try {
+            conexao = ControlaConexao.getConexao();
+            instrucao = conexao.prepareCall(sql);
+            instrucao.setString(1, tabela1);
+            instrucao.setString(2, tabela2);
+            resultados = instrucao.executeQuery();
+            while(resultados.next()){
+                String ladoN = resultados.getString("LADO N");
+                String chaveEstrangeira = resultados.getString("CHAVE ESTRANGEIRA");
+                relacionamentos.add(ladoN);
+                relacionamentos.add(chaveEstrangeira);
+            }
+            return relacionamentos;
+        } catch (SQLException ex) {
+            throw new BDException(BDMensagensPadrao.INSTRUCAO_ERRO, ex);
+        } finally {
+            ControlaConexao.fecharConexao(conexao);
+            ControlaConexao.fecharInstrucaoStatement(instrucao);
+            ControlaConexao.fecharResultSet(resultados);
+        }
+    }
+    
     public List<String> tabela(String banco, String tabela) throws BDException{
         Connection conexao = null;
         PreparedStatement instrucao = null;

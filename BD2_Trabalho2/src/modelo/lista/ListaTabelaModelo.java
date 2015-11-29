@@ -1,27 +1,31 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package modelo.lista;
 
 import java.util.List;
 import javax.swing.AbstractListModel;
 
+/**
+ *
+ * @author Borges
+ */
 public class ListaTabelaModelo extends AbstractListModel{
-    private final String tabela;
-    private final List<String> campos;
+    private final List<String> atributos;
 
-    public ListaTabelaModelo(String tabela, List<String> campos) {
-        this.tabela = tabela;
-        this.campos = campos;
+    public ListaTabelaModelo(List<String> tabela) {
+        this.atributos = tabela;
     }
-    
+        
     @Override
     public int getSize() {
-        return (campos.size() + 1);
+        return atributos.size();
     }
 
     @Override
     public Object getElementAt(int index) {
-        switch (index) {
-            case 0: return tabela.toUpperCase();
-            default: return campos.get(index - 1).toLowerCase();
-        }
+        return atributos.get(index).toLowerCase();
     }
 }

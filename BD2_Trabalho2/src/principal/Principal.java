@@ -2,21 +2,27 @@ package principal;
 
 import dao.ConsultarInformationSchema;
 import excecao.BDException;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
-import modelo.painel.PainelTabela;
-import modelo.lista.ListaModelo;
+import javax.swing.JInternalFrame;
+import modelo.internalframa.Tabelas;
+import modelo.lista.ListaTabelaModelo;
 
 public class Principal extends javax.swing.JFrame {
     private List<String> tabelas;
     private String tabela;
     private List<String> bancos;
     private String banco;
-    /**
-     * Creates new form Principal
-     */
+    private static List<JInternalFrame> framesInternas = new ArrayList<>();
+    
     public Principal() {
         initComponents();
+    }
+
+    public static List<JInternalFrame> getFramesInternas() {
+        return framesInternas;
     }
 
     /**
@@ -110,6 +116,11 @@ public class Principal extends javax.swing.JFrame {
         painelPrincipal.setBackground(new java.awt.Color(255, 255, 255));
         painelPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Tabelas", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 0, 0))); // NOI18N
         painelPrincipal.setForeground(new java.awt.Color(255, 255, 255));
+        painelPrincipal.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                painelPrincipalComponentMoved(evt);
+            }
+        });
 
         javax.swing.GroupLayout painelPrincipalLayout = new javax.swing.GroupLayout(painelPrincipal);
         painelPrincipal.setLayout(painelPrincipalLayout);
@@ -192,7 +203,13 @@ public class Principal extends javax.swing.JFrame {
         realizarAcaoTabela(evt);
     }//GEN-LAST:event_listTabelasMouseReleased
 
+    private void painelPrincipalComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_painelPrincipalComponentMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_painelPrincipalComponentMoved
+
     private void selecionarBanco() {
+        painelPrincipal.removeAll();
+        framesInternas.clear();
         int linha = listBancos.getSelectedIndex();
         if (linha >= 0) {
             this.banco = bancos.get(linha);
@@ -222,7 +239,7 @@ public class Principal extends javax.swing.JFrame {
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
         try {
             bancos = consulta.bancos();
-            ListaModelo modelo = new ListaModelo(bancos);
+            ListaTabelaModelo modelo = new ListaTabelaModelo(bancos);
             listBancos.setModel(modelo);
         } catch (BDException ex) {
             System.out.println("Erro: " + ex.getMessage());
@@ -233,7 +250,7 @@ public class Principal extends javax.swing.JFrame {
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
         try{
             tabelas = consulta.tabelas(banco);
-            ListaModelo modelo = new ListaModelo(tabelas);
+            ListaTabelaModelo modelo = new ListaTabelaModelo(tabelas);
             listTabelas.setModel(modelo);
         } catch(BDException ex) {
             System.out.println("Erro: " + ex.getMessage());
@@ -242,24 +259,80 @@ public class Principal extends javax.swing.JFrame {
     
     private void carregarPainel(){
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
-        List<String> campos;
+        List<String> atributos;
         try {
-            campos = consulta.tabela(banco, tabela);
-            PainelTabela painel = new PainelTabela(tabela, campos);
-            painel.setSize(100, 150);
-            painel.setLocation((painelPrincipal.getWidth() - painel.getWidth())/2, (painelPrincipal.getHeight()- painel.getHeight())/2);
-            //painel.repaint();
-            //painel.revalidate();
-            
-            painelPrincipal.add(painel);
-            painelPrincipal.revalidate();
-            painelPrincipal.updateUI();
-            
+            atributos = consulta.tabela(banco, tabela);
+            Tabelas frameInterna = new Tabelas(tabela, atributos);
+            if (framesInternas.isEmpty()){
+                criarFrameInterna(frameInterna);
+            } else {
+                if (!existeFrame(frameInterna)) {
+                    criarFrameInterna(frameInterna);
+                }
+            }
         } catch (BDException ex) {
             System.out.println("Erro: " + ex.getMessage());
         }
     }
-
+    
+    private void criarFrameInterna(Tabelas frame){
+        frame.setSize(150, 200);
+        frame.setLocation((painelPrincipal.getWidth() - frame.getWidth())/2, (painelPrincipal.getHeight()- frame.getHeight())/2);
+        painelPrincipal.add(frame);
+        frame.setVisible(true);
+        framesInternas.add(frame);
+    }
+    
+    private boolean existeFrame(JInternalFrame frameInterna){
+        for (JInternalFrame frame: framesInternas) {
+            if (frame.getTitle().equals(frameInterna.getTitle())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    //Não implementado
+    private void desenharRelacionamento(){
+        ConsultarInformationSchema consulta = new ConsultarInformationSchema();
+        for (int i = 0; i < framesInternas.size(); i++) {
+            for (int j = i + 1; j < framesInternas.size(); j++) {
+                List<String> relacionamentos;
+                try {
+                    relacionamentos = consulta.relacionamento(framesInternas.get(i).getTitle(), framesInternas.get(j).getTitle());
+                } catch (BDException ex) {
+                    relacionamentos = null;
+                    System.out.println("Erro: " + ex.getMessage());
+                }
+                if (relacionamentos != null) {
+                    
+                }
+            }
+        }
+    }
+    
+    //Não implementado
+    private int[] menorDistancia(Tabelas frame1, Tabelas frame2){
+        int posicoes[] = new int[2];
+        int frame1Posicao = 0;
+        int frame2Posicao = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                int frame1X = frame1.posicao(frame1Posicao).x;
+                int frame1Y = frame1.posicao(frame1Posicao).y;
+                int frame2X = frame1.posicao(frame2Posicao).x;
+                int frame2Y = frame1.posicao(frame2Posicao).x;
+                if (Point.distance(frame1X, frame1Y, frame2X, frame2Y) < Point.distance(frame1.posicao(i).x, frame1.posicao(i).y, frame2.posicao(j).x, frame1.posicao(j).y)) {
+                    frame1Posicao = i;
+                    frame2Posicao = j;
+                }
+            }
+        }
+        posicoes[0] = frame1Posicao;
+        posicoes[1] = frame2Posicao;
+        return posicoes;
+    }
+    
     @Override
     public void dispose() {
         super.dispose();
