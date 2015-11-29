@@ -12,19 +12,20 @@ import util.ControlaConexao;
 
 public class ConsultarInformationSchema {
     
-    public List<String> relacionamento(String tabela1, String tabela2) throws BDException{
+    public List<String> relacionamento(String banco, String tabela1, String tabela2) throws BDException{
         Connection conexao = null;
         PreparedStatement instrucao = null;
         ResultSet resultados = null;
         List<String> relacionamentos = new ArrayList<>();
         
-        String sql = "SP_EX(?, ?)";
+        String sql = "CALL " + banco + ".SP_EX3(?, ?, ?)";
         
         try {
             conexao = ControlaConexao.getConexao();
             instrucao = conexao.prepareCall(sql);
-            instrucao.setString(1, tabela1);
-            instrucao.setString(2, tabela2);
+            instrucao.setString(1, banco);
+            instrucao.setString(2, tabela1);
+            instrucao.setString(3, tabela2);
             resultados = instrucao.executeQuery();
             while(resultados.next()){
                 String ladoN = resultados.getString("LADO N");
@@ -34,6 +35,7 @@ public class ConsultarInformationSchema {
             }
             return relacionamentos;
         } catch (SQLException ex) {
+            System.out.println("Erro Mensagem: " + ex.getMessage());
             throw new BDException(BDMensagensPadrao.INSTRUCAO_ERRO, ex);
         } finally {
             ControlaConexao.fecharConexao(conexao);

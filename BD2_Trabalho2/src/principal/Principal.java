@@ -15,13 +15,13 @@ public class Principal extends javax.swing.JFrame {
     private String tabela;
     private List<String> bancos;
     private String banco;
-    private static List<JInternalFrame> framesInternas = new ArrayList<>();
+    private static List<Tabelas> framesInternas = new ArrayList<>();
     
     public Principal() {
         initComponents();
     }
 
-    public static List<JInternalFrame> getFramesInternas() {
+    public static List<Tabelas> getFramesInternas() {
         return framesInternas;
     }
 
@@ -281,6 +281,7 @@ public class Principal extends javax.swing.JFrame {
         painelPrincipal.add(frame);
         frame.setVisible(true);
         framesInternas.add(frame);
+        desenharRelacionamento();
     }
     
     private boolean existeFrame(JInternalFrame frameInterna){
@@ -299,19 +300,28 @@ public class Principal extends javax.swing.JFrame {
             for (int j = i + 1; j < framesInternas.size(); j++) {
                 List<String> relacionamentos;
                 try {
-                    relacionamentos = consulta.relacionamento(framesInternas.get(i).getTitle(), framesInternas.get(j).getTitle());
+                    relacionamentos = consulta.relacionamento(banco, framesInternas.get(i).getTitle(), framesInternas.get(j).getTitle());
                 } catch (BDException ex) {
                     relacionamentos = null;
                     System.out.println("Erro: " + ex.getMessage());
                 }
                 if (relacionamentos != null) {
-                    
+                    System.out.println("Teste");
+                    int menorDistancia[] = menorDistancia(framesInternas.get(i), framesInternas.get(j));
+                    Point posicao1 = framesInternas.get(i).posicao(menorDistancia[0]);
+                    Point posicao2 = framesInternas.get(i).posicao(menorDistancia[1]);
+                    Point pontoMedio = new Point((posicao1.x + posicao2.x)/2, (posicao1.y + posicao2.y)/2);
+                    painelPrincipal.getGraphics().drawLine(posicao1.x, posicao1.y, posicao1.x, pontoMedio.y);
+                    painelPrincipal.getGraphics().drawLine(posicao1.x, pontoMedio.y, pontoMedio.x, pontoMedio.y);
+                    painelPrincipal.getGraphics().drawLine(posicao2.x, posicao2.y, posicao2.x, pontoMedio.y);
+                    painelPrincipal.getGraphics().drawLine(posicao2.x, pontoMedio.y, pontoMedio.x, pontoMedio.y);
                 }
             }
         }
+        painelPrincipal.revalidate();
     }
     
-    //Não implementado
+    //Provavelmente erro esta aqui.
     private int[] menorDistancia(Tabelas frame1, Tabelas frame2){
         int posicoes[] = new int[2];
         int frame1Posicao = 0;

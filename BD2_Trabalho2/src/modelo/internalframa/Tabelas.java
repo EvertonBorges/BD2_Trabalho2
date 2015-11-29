@@ -17,9 +17,10 @@ public class Tabelas extends javax.swing.JInternalFrame {
         initComponents();
         setTitle(title.toUpperCase());
         preencherLista();
-        verificarRelacionamento();
+        //verificarRelacionamento();
     }
     
+    /*
     private void verificarRelacionamento() {
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
         for (JInternalFrame frame: Principal.getFramesInternas()) {
@@ -30,7 +31,8 @@ public class Tabelas extends javax.swing.JInternalFrame {
             }
         }
     }
-
+    */
+    
     public List<String> getAtributos() {
         return atributos;
     }
