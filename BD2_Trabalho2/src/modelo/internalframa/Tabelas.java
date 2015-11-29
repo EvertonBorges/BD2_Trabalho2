@@ -39,6 +39,22 @@ public class Tabelas extends javax.swing.JInternalFrame {
         return new Point(getLocation().x, getLocation().y + getHeight()/2);
     }
     
+    private Point posicaoNordeste(){
+        return new Point(getLocation().x + getWidth(), getLocation().y);
+    }
+    
+    private Point posicaoSudeste(){
+        return new Point(getLocation().x + getWidth(), getLocation().y + getHeight());
+    }
+    
+    private Point posicaoSudoeste(){
+        return new Point(getLocation().x, getLocation().y + getHeight());
+    }
+    
+    private Point posicaoNoroeste(){
+        return new Point(getLocation().x, getLocation().y);
+    }
+    
     public Point getCentro() {
         return new Point(getLocation().x + (getWidth()/2), getLocation().y + (getHeight()/2));
     }
@@ -46,9 +62,13 @@ public class Tabelas extends javax.swing.JInternalFrame {
     public Point posicao(int i){
         switch (i){
             case 0: return posicaoNorte();
-            case 1: return posicaoLeste();
-            case 2: return posicaoSul();
-            case 3: return posicaoOeste();
+            case 1: return posicaoNordeste();
+            case 2: return posicaoLeste();
+            case 3: return posicaoSudeste();
+            case 4: return posicaoSul();
+            case 5: return posicaoSudoeste();
+            case 6: return posicaoOeste();
+            case 7: return posicaoNoroeste();
             default: return null;
         }
     }

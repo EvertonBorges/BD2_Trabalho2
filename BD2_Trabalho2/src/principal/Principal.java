@@ -2,13 +2,11 @@ package principal;
 
 import dao.ConsultarInformationSchema;
 import excecao.BDException;
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -338,10 +336,9 @@ public class Principal extends javax.swing.JFrame {
     //Não implementado
     private void desenharRelacionamento(){
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
-        List <int[]> posicoes = new ArrayList<>();
+        List<String> relacionamentos = new ArrayList<>();
         for (int i = 0; i < framesInternas.size(); i++) {
             for (int j = i + 1; j < framesInternas.size(); j++) {
-                List<String> relacionamentos = new ArrayList<>();
                 try {
                     relacionamentos = consulta.relacionamento(banco, framesInternas.get(i).getTitle(), framesInternas.get(j).getTitle());
                 } catch (BDException ex) {
@@ -352,12 +349,23 @@ public class Principal extends javax.swing.JFrame {
                     Point posicao1 = framesInternas.get(i).posicao(menorDistancia[0]);
                     Point posicao2 = framesInternas.get(j).posicao(menorDistancia[1]);
                     int posicao[] = {posicao1.x, posicao1.y, posicao2.x, posicao2.y};
-                    posicoes.add(posicao);
+                    boolean frameILadoN = false;
+                    for (String atributo: framesInternas.get(i).getAtributos()) {
+                        if (relacionamentos.get(1).equals(atributo.toLowerCase())) {
+                            frameILadoN = true;
+                            break;
+                        }
+                    }
+                    painelPrincipal.getGraphics().drawLine(posicao[0], posicao[1], posicao[2], posicao[3]);
+                    if (frameILadoN) {
+                        painelPrincipal.getGraphics().drawString("N", posicao[0], posicao[1]);
+                        painelPrincipal.getGraphics().drawString("1", posicao[2], posicao[3]);
+                    } else {
+                        painelPrincipal.getGraphics().drawString("N", posicao[2], posicao[3]);
+                        painelPrincipal.getGraphics().drawString("1", posicao[0], posicao[1]);
+                    }
                 }
             }
-        }
-        for (int[] posicao: posicoes) {
-            painelPrincipal.getGraphics().drawLine(posicao[0], posicao[1], posicao[2], posicao[3]);
         }
     }
     
@@ -366,12 +374,12 @@ public class Principal extends javax.swing.JFrame {
         int posicoes[] = new int[2];
         int frame1Posicao = 0;
         int frame2Posicao = 0;
-        for (int i = 0; i < 4; i++) {
-            for (int j = i; j < 4; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 int frame1X = frame1.posicao(i).x;
                 int frame1Y = frame1.posicao(i).y;
                 int frame2X = frame2.posicao(j).x;
-                int frame2Y = frame2.posicao(j).x;
+                int frame2Y = frame2.posicao(j).y;
                 int frame1MenorX = frame1.posicao(frame1Posicao).x;
                 int frame1MenorY = frame1.posicao(frame1Posicao).y;
                 int frame2MenorX = frame2.posicao(frame2Posicao).x;

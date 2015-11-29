@@ -18,7 +18,7 @@ public class ConsultarInformationSchema {
         ResultSet resultados = null;
         List<String> relacionamentos = new ArrayList<>();
         
-        String sql = "CALL " + banco + ".SP_EX3(?, ?, ?)";
+        String sql = "CALL bd_apbd.SP_EX3(?, ?, ?)";
         
         try {
             conexao = ControlaConexao.getConexao();
