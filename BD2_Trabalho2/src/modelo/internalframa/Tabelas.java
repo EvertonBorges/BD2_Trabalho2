@@ -2,9 +2,7 @@ package modelo.internalframa;
 
 import java.awt.Point;
 import java.util.List;
-import javax.swing.JInternalFrame;
 import modelo.lista.ListaTabelaModelo;
-import principal.Principal;
 
 public class Tabelas extends javax.swing.JInternalFrame {
     private final List<String> atributos;
@@ -14,21 +12,7 @@ public class Tabelas extends javax.swing.JInternalFrame {
         initComponents();
         setTitle(title.toUpperCase());
         preencherLista();
-        //verificarRelacionamento();
     }
-    
-    /*
-    private void verificarRelacionamento() {
-        ConsultarInformationSchema consulta = new ConsultarInformationSchema();
-        for (JInternalFrame frame: Principal.getFramesInternas()) {
-            try {
-                relacionamentos = consulta.relacionamento(getTitle(), frame.getTitle());
-            } catch (BDException ex) {
-                System.out.println("Erro: " + ex.getMessage());
-            }
-        }
-    }
-    */
     
     public List<String> getAtributos() {
         return atributos;
@@ -72,12 +56,6 @@ public class Tabelas extends javax.swing.JInternalFrame {
     @Override
     public void dispose() {
         super.dispose();
-        for (JInternalFrame frame: Principal.getFramesInternas()) {
-            if (frame.getTitle().equals(this.getTitle())) {
-                Principal.getFramesInternas().remove(frame);
-                break;
-            }
-        }
     }
 
     /**

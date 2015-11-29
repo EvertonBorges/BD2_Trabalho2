@@ -5,15 +5,17 @@ import excecao.BDException;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.MouseInputAdapter;
 import modelo.internalframa.Tabelas;
 import modelo.lista.ListaTabelaModelo;
 
@@ -124,6 +126,11 @@ public class Principal extends javax.swing.JFrame {
         painelPrincipal.setBackground(new java.awt.Color(255, 255, 255));
         painelPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Tabelas", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 0, 0))); // NOI18N
         painelPrincipal.setForeground(new java.awt.Color(255, 255, 255));
+        painelPrincipal.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentMoved(java.awt.event.ComponentEvent evt) {
+                painelPrincipalComponentMoved(evt);
+            }
+        });
 
         javax.swing.GroupLayout painelPrincipalLayout = new javax.swing.GroupLayout(painelPrincipal);
         painelPrincipal.setLayout(painelPrincipalLayout);
@@ -207,6 +214,11 @@ public class Principal extends javax.swing.JFrame {
         realizarAcaoTabela(evt);
     }//GEN-LAST:event_listTabelasMouseReleased
 
+    private void painelPrincipalComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_painelPrincipalComponentMoved
+        //this.repaint();
+        //this.update(painelPrincipal.getGraphics());
+    }//GEN-LAST:event_painelPrincipalComponentMoved
+
     private void selecionarBanco() {
         painelPrincipal.removeAll();
         framesInternas.clear();
@@ -283,23 +295,28 @@ public class Principal extends javax.swing.JFrame {
             public void componentMoved(ComponentEvent e) {
                 super.componentMoved(e);
                 painelPrincipal.repaint();
-                
                 desenharRelacionamento();
-                painelPrincipal.revalidate();
             }
         });
-        frame.addMouseListener(new MouseAdapter() {
+        
+        frame.addMouseMotionListener(new MouseInputAdapter() {
             @Override
-            public void mouseReleased(MouseEvent e) {
-                super.mouseReleased(e); //To change body of generated methods, choose Tools | Templates.
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e); //To change body of generated methods, choose Tools | Templates.
                 desenharRelacionamento();
             }
         });
+        
         frame.addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosed(InternalFrameEvent e) {
-                super.internalFrameClosed(e); //To change body of generated methods, choose Tools | Templates.
-                painelPrincipal.repaint();
+                super.internalFrameClosed(e);
+                for (JInternalFrame frameInterna: framesInternas) {
+                    if (frameInterna.getTitle().equals(frame.getTitle())) {
+                        Principal.getFramesInternas().remove(frame);
+                        break;
+                    }
+                }
                 desenharRelacionamento();
             }
         });
@@ -321,6 +338,7 @@ public class Principal extends javax.swing.JFrame {
     //Não implementado
     private void desenharRelacionamento(){
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
+        List <int[]> posicoes = new ArrayList<>();
         for (int i = 0; i < framesInternas.size(); i++) {
             for (int j = i + 1; j < framesInternas.size(); j++) {
                 List<String> relacionamentos = new ArrayList<>();
@@ -333,9 +351,13 @@ public class Principal extends javax.swing.JFrame {
                     int menorDistancia[] = menorDistancia(framesInternas.get(i), framesInternas.get(j));
                     Point posicao1 = framesInternas.get(i).posicao(menorDistancia[0]);
                     Point posicao2 = framesInternas.get(j).posicao(menorDistancia[1]);
-                    painelPrincipal.getGraphics().drawLine(posicao1.x, posicao1.y, posicao2.x, posicao2.y);
+                    int posicao[] = {posicao1.x, posicao1.y, posicao2.x, posicao2.y};
+                    posicoes.add(posicao);
                 }
             }
+        }
+        for (int[] posicao: posicoes) {
+            painelPrincipal.getGraphics().drawLine(posicao[0], posicao[1], posicao[2], posicao[3]);
         }
     }
     
