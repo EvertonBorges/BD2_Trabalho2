@@ -235,9 +235,6 @@
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="componentMoved" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="painelPrincipalComponentMoved"/>
-      </Events>
 
       <Layout>
         <DimensionLayout dim="0">

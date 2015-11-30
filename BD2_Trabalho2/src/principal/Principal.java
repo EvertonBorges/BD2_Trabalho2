@@ -128,11 +128,6 @@ public class Principal extends javax.swing.JFrame {
         painelPrincipal.setBackground(new java.awt.Color(255, 255, 255));
         painelPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Tabelas", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(255, 0, 0))); // NOI18N
         painelPrincipal.setForeground(new java.awt.Color(255, 255, 255));
-        painelPrincipal.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentMoved(java.awt.event.ComponentEvent evt) {
-                painelPrincipalComponentMoved(evt);
-            }
-        });
 
         javax.swing.GroupLayout painelPrincipalLayout = new javax.swing.GroupLayout(painelPrincipal);
         painelPrincipal.setLayout(painelPrincipalLayout);
@@ -207,8 +202,7 @@ public class Principal extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(painelCampos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(bGerarSQL)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(bGerarSQL)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -241,6 +235,7 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        limparTabelasEListas();
         preencherBancos();
     }//GEN-LAST:event_formWindowGainedFocus
 
@@ -254,11 +249,6 @@ public class Principal extends javax.swing.JFrame {
         realizarAcaoTabela(evt);
     }//GEN-LAST:event_listTabelasMouseReleased
 
-    private void painelPrincipalComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_painelPrincipalComponentMoved
-        //this.repaint();
-        //this.update(painelPrincipal.getGraphics());
-    }//GEN-LAST:event_painelPrincipalComponentMoved
-
     private void bGerarSQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGerarSQLActionPerformed
         int linhasSelecionadas[] = tbAtributos.getSelectedRows();
         List<List<String>> linhas = new ArrayList<>();
@@ -269,9 +259,25 @@ public class Principal extends javax.swing.JFrame {
         sqlg.setVisible(true);
     }//GEN-LAST:event_bGerarSQLActionPerformed
 
-    private void selecionarBanco() {
-        painelPrincipal.removeAll();
+    private void limparTabelasEListas(){
         framesInternas.clear();
+        painelPrincipal.removeAll();
+        painelPrincipal.updateUI();
+        if (!linhas.isEmpty()) {
+            linhas.clear();
+            preencherTabelaAtributos();
+        }
+        if (tabelas == null) {
+            tabelas = new ArrayList<>();
+            carregarTabelas();
+        } else {
+            tabelas = new ArrayList<>();
+            carregarTabelas();
+        }
+        this.repaint();
+    }
+    
+    private void selecionarBanco() {
         int linha = listBancos.getSelectedIndex();
         if (linha >= 0) {
             this.banco = bancos.get(linha);
@@ -279,7 +285,7 @@ public class Principal extends javax.swing.JFrame {
     }
     
     private void realizarAcaoBanco(MouseEvent evt) {
-        if (evt.getButton() == MouseEvent.BUTTON1) { // Botão Esquerdo do Mouse
+        if (evt.getButton() == MouseEvent.BUTTON1) {
             preencherTabelas();
         }
     }
@@ -292,7 +298,7 @@ public class Principal extends javax.swing.JFrame {
     }
     
     private void realizarAcaoTabela(MouseEvent evt) {
-        if (evt.getButton() == MouseEvent.BUTTON1) { // Botão Esquerdo do Mouse
+        if (evt.getButton() == MouseEvent.BUTTON1) {
             carregarPainel();
         }
     }
@@ -317,14 +323,18 @@ public class Principal extends javax.swing.JFrame {
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
         try{
             tabelas = consulta.tabelas(banco);
-            ListaTabelaModelo modelo = new ListaTabelaModelo(tabelas);
-            listTabelas.setModel(modelo);
+            carregarTabelas();
             tfBanco.setText(consulta.tamanhoBanco(banco));
             lBanco.setVisible(true);
             tfBanco.setVisible(true);
         } catch(BDException ex) {
             System.out.println("Erro: " + ex.getMessage());
         }
+    }
+    
+    private void carregarTabelas(){
+        ListaTabelaModelo modelo = new ListaTabelaModelo(tabelas);
+        listTabelas.setModel(modelo);
     }
     
     private void carregarPainel(){
@@ -397,7 +407,7 @@ public class Principal extends javax.swing.JFrame {
         int linha = frame.getListaAtributos().getSelectedIndex();
         if (linha >= 0) {
             String banco = this.banco;
-            String tabela = this.tabela;
+            String tabela = frame.getTitle();
             String atributo = frame.getAtributos().get(linha);
             List<String> atributos = new ArrayList<>();
             atributos.add(banco);
