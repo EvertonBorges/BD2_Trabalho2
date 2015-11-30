@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package principal;
 
 import excecao.BDException;
@@ -11,10 +6,6 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import util.ControlaConexao;
 
-/**
- *
- * @author Everton Soares
- */
 public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
