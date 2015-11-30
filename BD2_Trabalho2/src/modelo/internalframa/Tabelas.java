@@ -1,26 +1,50 @@
 package modelo.internalframa;
 
+import dao.ConsultarInformationSchema;
+import excecao.BDException;
 import java.awt.Point;
 import java.util.List;
+import javax.swing.JList;
 import modelo.lista.ListaTabelaModelo;
 
 public class Tabelas extends javax.swing.JInternalFrame {
+    private final String banco;
     private final List<String> atributos;
     
-    public Tabelas(String title, List<String> atributos) {
+    public Tabelas(String banco, String title, List<String> atributos) {
         this.atributos = atributos;
+        this.banco = banco;
         initComponents();
         setTitle(title.toUpperCase());
         preencherLista();
+        preencherTamanhoTabela();
+        lIndex.setVisible(false);
+        tfIndex.setVisible(false);
     }
     
     public List<String> getAtributos() {
         return atributos;
     }
+
+    public JList getListaAtributos() {
+        return listaAtributos;
+    }
     
     private void preencherLista(){
         ListaTabelaModelo modelo = new ListaTabelaModelo(atributos);
         listaAtributos.setModel(modelo);
+    }
+    
+    private void preencherTamanhoTabela(){
+        ConsultarInformationSchema consulta = new ConsultarInformationSchema();
+        try {
+            List<String> tamanhos;
+            tamanhos = consulta.tamanhoTabela(banco, title);
+            tfTabela.setText(tamanhos.get(0));
+            tfIndex.setText(tamanhos.get(1));
+        } catch (BDException ex) {
+            System.out.println("Erro: " + ex.getMessage());
+        }
     }
     
     private Point posicaoNorte(){
@@ -62,12 +86,12 @@ public class Tabelas extends javax.swing.JInternalFrame {
     public Point posicao(int i){
         switch (i){
             case 0: return posicaoNorte();
-            case 1: return posicaoNordeste();
-            case 2: return posicaoLeste();
-            case 3: return posicaoSudeste();
-            case 4: return posicaoSul();
-            case 5: return posicaoSudoeste();
-            case 6: return posicaoOeste();
+            case 1: return posicaoLeste();
+            case 2: return posicaoSul();
+            case 3: return posicaoOeste();
+            case 4: return posicaoNordeste();
+            case 5: return posicaoSudeste();
+            case 6: return posicaoSudoeste();
             case 7: return posicaoNoroeste();
             default: return null;
         }
@@ -89,6 +113,13 @@ public class Tabelas extends javax.swing.JInternalFrame {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         listaAtributos = new javax.swing.JList();
+        lTamanhos = new javax.swing.JLabel();
+        lTabela = new javax.swing.JLabel();
+        tfTabela = new javax.swing.JLabel();
+        ckIndex = new javax.swing.JCheckBox();
+        lIndex = new javax.swing.JLabel();
+        tfIndex = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setBorder(javax.swing.BorderFactory.createEtchedBorder());
         setClosable(true);
@@ -99,29 +130,94 @@ public class Tabelas extends javax.swing.JInternalFrame {
         listaAtributos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(listaAtributos);
 
+        lTamanhos.setText("Tamanho:");
+
+        lTabela.setText("Tabela:");
+
+        tfTabela.setText("jLabel2");
+
+        ckIndex.setToolTipText("Mostrar tamanho dos indice?");
+        ckIndex.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                ckIndexItemStateChanged(evt);
+            }
+        });
+
+        lIndex.setText("Index:");
+
+        tfIndex.setText("jLabel2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lTamanhos)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lTabela)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tfTabela))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lIndex)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tfIndex)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                        .addComponent(ckIndex, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSeparator1))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lTamanhos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lTabela)
+                            .addComponent(tfTabela)))
+                    .addComponent(ckIndex))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lIndex)
+                    .addComponent(tfIndex))
+                .addGap(15, 15, 15))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
+    private void ckIndexItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ckIndexItemStateChanged
+        if (ckIndex.isSelected()) {
+            lTamanhos.setText("Tamanhos:");
+            lIndex.setVisible(true);
+            tfIndex.setVisible(true);
+        } else {
+            lTamanhos.setText("Tamanho:");
+            lIndex.setVisible(false);
+            tfIndex.setVisible(false);
+        }
+    }//GEN-LAST:event_ckIndexItemStateChanged
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox ckIndex;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lIndex;
+    private javax.swing.JLabel lTabela;
+    private javax.swing.JLabel lTamanhos;
     private javax.swing.JList listaAtributos;
+    private javax.swing.JLabel tfIndex;
+    private javax.swing.JLabel tfTabela;
     // End of variables declaration//GEN-END:variables
 }

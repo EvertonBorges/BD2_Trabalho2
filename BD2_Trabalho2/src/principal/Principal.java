@@ -2,13 +2,15 @@ package principal;
 
 import dao.ConsultarInformationSchema;
 import excecao.BDException;
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameAdapter;
@@ -16,21 +18,20 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.MouseInputAdapter;
 import modelo.internalframa.Tabelas;
 import modelo.lista.ListaTabelaModelo;
+import modelo.tabela.TabelaModelo;
 
 public class Principal extends javax.swing.JFrame {
     private List<String> tabelas;
     private String tabela;
     private List<String> bancos;
     private String banco;
-    private static List<Tabelas> framesInternas = new ArrayList<>();
+    private List<Tabelas> framesInternas = new ArrayList<>();
+    private List<List<String>> linhas = new ArrayList<>();
     
-    public Principal() {
+    public Principal(String usuario) {
         initComponents();
+        tfUsuario.setText(usuario);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-    }
-
-    public static List<Tabelas> getFramesInternas() {
-        return framesInternas;
     }
 
     /**
@@ -53,6 +54,11 @@ public class Principal extends javax.swing.JFrame {
         painelCampos = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbAtributos = new javax.swing.JTable();
+        lUsuario = new javax.swing.JLabel();
+        tfUsuario = new javax.swing.JLabel();
+        lBanco = new javax.swing.JLabel();
+        tfBanco = new javax.swing.JLabel();
+        bGerarSQL = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Banco");
@@ -134,7 +140,7 @@ public class Principal extends javax.swing.JFrame {
         painelPrincipal.setLayout(painelPrincipalLayout);
         painelPrincipalLayout.setHorizontalGroup(
             painelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 505, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         painelPrincipalLayout.setVerticalGroup(
             painelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,12 +166,27 @@ public class Principal extends javax.swing.JFrame {
         painelCampos.setLayout(painelCamposLayout);
         painelCamposLayout.setHorizontalGroup(
             painelCamposLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
         );
         painelCamposLayout.setVerticalGroup(
             painelCamposLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
         );
+
+        lUsuario.setText("Usuário:");
+
+        tfUsuario.setText("jLabel2");
+
+        lBanco.setText("Banco:");
+
+        tfBanco.setText("jLabel4");
+
+        bGerarSQL.setText("GERAR SQL");
+        bGerarSQL.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bGerarSQLActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -177,7 +198,19 @@ public class Principal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(painelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(painelCampos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lUsuario)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfUsuario)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 517, Short.MAX_VALUE)
+                        .addComponent(lBanco)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfBanco, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(painelCampos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(bGerarSQL)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -186,9 +219,20 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lUsuario)
+                            .addComponent(tfUsuario)
+                            .addComponent(lBanco)
+                            .addComponent(tfBanco))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(painelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(painelCampos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(painelCampos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(bGerarSQL, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(painelConsultas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(11, 11, 11))))
@@ -216,6 +260,16 @@ public class Principal extends javax.swing.JFrame {
         //this.repaint();
         //this.update(painelPrincipal.getGraphics());
     }//GEN-LAST:event_painelPrincipalComponentMoved
+
+    private void bGerarSQLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGerarSQLActionPerformed
+        int linhasSelecionadas[] = tbAtributos.getSelectedRows();
+        List<List<String>> linhas = new ArrayList<>();
+        for (int i = 0; i < linhasSelecionadas.length; i++) {
+            linhas.add(this.linhas.get(linhasSelecionadas[i]));
+        }
+        SQLGerado sqlg = new SQLGerado(linhas);
+        sqlg.setVisible(true);
+    }//GEN-LAST:event_bGerarSQLActionPerformed
 
     private void selecionarBanco() {
         painelPrincipal.removeAll();
@@ -246,6 +300,11 @@ public class Principal extends javax.swing.JFrame {
     }
     
     private void preencherBancos(){
+        painelPrincipal.removeAll();
+        listTabelas.removeAll();
+        listBancos.removeAll();
+        lBanco.setVisible(false);
+        tfBanco.setVisible(false);
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
         try {
             bancos = consulta.bancos();
@@ -262,6 +321,9 @@ public class Principal extends javax.swing.JFrame {
             tabelas = consulta.tabelas(banco);
             ListaTabelaModelo modelo = new ListaTabelaModelo(tabelas);
             listTabelas.setModel(modelo);
+            tfBanco.setText(consulta.tamanhoBanco(banco));
+            lBanco.setVisible(true);
+            tfBanco.setVisible(true);
         } catch(BDException ex) {
             System.out.println("Erro: " + ex.getMessage());
         }
@@ -272,7 +334,7 @@ public class Principal extends javax.swing.JFrame {
         List<String> atributos;
         try {
             atributos = consulta.tabela(banco, tabela);
-            Tabelas frameInterna = new Tabelas(tabela, atributos);
+            Tabelas frameInterna = new Tabelas(banco, tabela, atributos);
             if (framesInternas.isEmpty()){
                 criarFrameInterna(frameInterna);
             } else {
@@ -309,19 +371,79 @@ public class Principal extends javax.swing.JFrame {
             @Override
             public void internalFrameClosed(InternalFrameEvent e) {
                 super.internalFrameClosed(e);
-                for (JInternalFrame frameInterna: framesInternas) {
+                for (Tabelas frameInterna: framesInternas) {
                     if (frameInterna.getTitle().equals(frame.getTitle())) {
-                        Principal.getFramesInternas().remove(frame);
+                        framesInternas.remove(frameInterna);
                         break;
                     }
                 }
                 desenharRelacionamento();
             }
         });
+        
+        frame.getListaAtributos().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                selecionarAtributo(frame);
+                preencherTabelaAtributos();
+            }
+        });
         painelPrincipal.add(frame);
         frame.setVisible(true);
         framesInternas.add(frame);
         desenharRelacionamento();
+    }
+    
+    private void selecionarAtributo(Tabelas frame){
+        int linha = frame.getListaAtributos().getSelectedIndex();
+        if (linha >= 0) {
+            String banco = this.banco;
+            String tabela = this.tabela;
+            String atributo = frame.getAtributos().get(linha);
+            List<String> atributos = new ArrayList<>();
+            atributos.add(banco);
+            atributos.add(tabela);
+            atributos.add(atributo);
+            int cont = 0;
+            if (linhas.isEmpty()) {
+                ConsultarInformationSchema consulta = new ConsultarInformationSchema();
+                String tipo;
+                try {
+                    tipo = consulta.tipoAtributo(banco, tabela, atributo);
+                    atributos.add(tipo);
+                    linhas.add(atributos);
+                } catch (BDException ex) {
+                    System.out.println("Erro: " + ex.getMessage());
+                }
+            } else {
+                for (List<String> linhaAtual: linhas) {
+                    if (atributos.get(0).equals(linhaAtual.get(0)) && atributos.get(1).equals(linhaAtual.get(1)) && atributos.get(2).equals(linhaAtual.get(2))) {
+                        linhas.remove(linhaAtual);
+                        break;
+                    } else {
+                        if (cont == (linhas.size() - 1)){
+                            ConsultarInformationSchema consulta = new ConsultarInformationSchema();
+                            String tipo;
+                            try {
+                                tipo = consulta.tipoAtributo(banco, tabela, atributo);
+                                atributos.add(tipo);
+                                linhas.add(atributos);
+                                break;
+                            } catch (BDException ex) {
+                                System.out.println("Erro: " + ex.getMessage());
+                            }
+                        }
+                    }
+                    cont++;
+                }
+            }
+        }
+    }
+    
+    private void preencherTabelaAtributos() {
+        TabelaModelo modelo = new TabelaModelo(linhas);
+        tbAtributos.setModel(modelo);
     }
     
     private boolean existeFrame(JInternalFrame frameInterna){
@@ -333,7 +455,6 @@ public class Principal extends javax.swing.JFrame {
         return false;
     }
     
-    //Não implementado
     private void desenharRelacionamento(){
         ConsultarInformationSchema consulta = new ConsultarInformationSchema();
         List<String> relacionamentos = new ArrayList<>();
@@ -369,7 +490,6 @@ public class Principal extends javax.swing.JFrame {
         }
     }
     
-    //Provavelmente erro esta aqui.
     private int[] menorDistancia(Tabelas frame1, Tabelas frame2){
         int posicoes[] = new int[2];
         int frame1Posicao = 0;
@@ -403,9 +523,12 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bGerarSQL;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lBanco;
+    private javax.swing.JLabel lUsuario;
     private javax.swing.JList listBancos;
     private javax.swing.JList listTabelas;
     private javax.swing.JPanel painelBancos;
@@ -414,5 +537,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JPanel painelPrincipal;
     private javax.swing.JPanel painelTabelas;
     private javax.swing.JTable tbAtributos;
+    private javax.swing.JLabel tfBanco;
+    private javax.swing.JLabel tfUsuario;
     // End of variables declaration//GEN-END:variables
 }

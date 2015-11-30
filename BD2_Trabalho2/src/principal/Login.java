@@ -16,15 +16,8 @@ import util.ControlaConexao;
  * @author Everton Soares
  */
 public class Login extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Login
-     */
     public Login() {
         initComponents();
-        tfHost.setText("localhost");
-        tfPorta.setText("3306");
-        tfLogin.requestFocus();
     }
 
     /**
@@ -222,7 +215,7 @@ public class Login extends javax.swing.JFrame {
     }
     
     private void janelaPrincipal(){
-        Principal principal = new Principal();
+        Principal principal = new Principal(tfLogin.getText());
         principal.setVisible(true);
     }
     

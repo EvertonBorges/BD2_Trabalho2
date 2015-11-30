@@ -4,11 +4,9 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 public class TabelaModelo extends AbstractTableModel{
-    private final String tabela;
-    private final List<String> campos;
+    private final List<List<String>> campos;
 
-    public TabelaModelo(String tabela, List<String> campos) {
-        this.tabela = tabela;
+    public TabelaModelo(List<List<String>> campos) {
         this.campos = campos;
     }
 
@@ -19,16 +17,29 @@ public class TabelaModelo extends AbstractTableModel{
 
     @Override
     public int getColumnCount() {
-        return 1;
+        return 4;
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return campos.get(rowIndex).toLowerCase();
+        List<String> linha = campos.get(rowIndex);
+        switch (columnIndex) {
+            case 0: return linha.get(0);
+            case 1: return linha.get(1);
+            case 2: return linha.get(2);
+            case 3: return linha.get(3);
+            default: return null;
+        }
     }
 
     @Override
     public String getColumnName(int column) {
-        return tabela.toUpperCase();
+        switch (column) {
+            case 0: return "DATABASE";
+            case 1: return "TABELA";
+            case 2: return "ATRIBUTO";
+            case 3: return "TIPO";
+            default: return "";
+        }
     }
 }
